@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script defer src="{% static 'fontawesome/js/fontawesome-all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+	{% block head %}
+	<title>Details</title>
+	<SCRIPT type="text/javascript">
+		function preventBack() { window.history.forward(); }
+		setTimeout("preventBack()", 0);
+		window.onunload = function () { null };
+	</SCRIPT>
+	{% endblock %}
+</head>
+
+<body>
+	<script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	{% block body %}
+
+	{% endblock %}
+</body>
+
+</html>
