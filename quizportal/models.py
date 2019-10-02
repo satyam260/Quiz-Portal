@@ -84,25 +84,6 @@ class Time3(models.Model):
 
 	
 
-		
-'''#Scored Card + Solved
-class SolvedQ1(models.Model):
-	id_no=models.ForeignKey(User, on_delete=models.CASCADE)
-	q_idsol=ArrayField(models.IntegerField(), default=list)
-	q_idunsol=ArrayField(models.IntegerField(), default=list)
-
-#Scored Card + Solved
-class SolvedQ2(models.Model):
-	id_no=models.ForeignKey(User, on_delete=models.CASCADE)
-	q_idsol=ArrayField(models.IntegerField(), default=list)
-	q_idunsol=ArrayField(models.IntegerField(), default=list)
-
-#Scored Card + Solved
-class SolvedQ3(models.Model):
-	id_no=models.ForeignKey(User, on_delete=models.CASCADE)
-	q_idsol=ArrayField(models.IntegerField(), default=list)
-	q_idunsol=ArrayField(models.IntegerField(), default=list)'''
-
 
 class SolvedQ1(models.Model):
 	id_no=models.ForeignKey(User, on_delete=models.CASCADE)

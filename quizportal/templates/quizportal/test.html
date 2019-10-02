@@ -1,0 +1,13 @@
+{% load mathfilters %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>||test||</title>
+</head>
+<body>
+	{% for i in questions %}
+		{{i.id_no}} : {{i.question}}
+		<br /><br /><hr><br /><br />
+	{% endfor %}
+</body>
+</html>

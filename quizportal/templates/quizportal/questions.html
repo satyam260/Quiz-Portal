@@ -155,7 +155,7 @@
 				color: #777;
 			}
 			body {
-				background-image: linear-gradient(to right, rgb(0, 0, 255), rgb(255, 128, 128));
+				/*background-image: linear-gradient(to right, rgb(0, 0, 255), rgb(255, 128, 128));*/
 			}
 			#tower{
 				background-color:#419D78;
@@ -319,91 +319,13 @@
 				var timeArray1=timeArray.split(/[.]+/);
 				console.log(timeArray1);
 				
-				// //End Time Time
-				// var h = timeArray1[0];
-				// var m = timeArray1[1];
-				// var s = timeArray1[2];
-
-				// //Current Time
-
-				// var d=new Date();
-
-				// //var d = n.toLocaleTimeString();
 				
-				// var ch=d.getHours();
-				// var cm=d.getMinutes();
-				// var cs=d.getSeconds();
-				
-				// //Conversion to Seconds
-				// var htos=((h - ch) * 60 * 60);
-				// if(htos<=0)
-				// {
-				// 	htos=0
-				// }
-				// var mtos=((m - cm) * 60);
-				// if(mtos<=0)
-				// {
-				// 	mtos=0
-				// }
-				// var sec =(s - cs);
-				// var secs=mtos+htos+sec;
-
-				// //Conversion to hh:mm:ss
-				// var hours = Math.floor(secs / (60 * 60));
-				// if(hours<=0)
-				// {
-				// 	hours="00"
-				// }
-				// else if(hours>0 && hours <=9)
-				// {
-				// 	hours="0"+hours
-				// }
-
-				// var divisor_for_minutes = secs % (60 * 60);
-				// var minutes = Math.floor(divisor_for_minutes / 60);
-				// if(minutes<=0)
-				// {
-				// 	minutes="00"
-				// }
-				// else if(minutes>0 && minutes <=9)
-				// {
-				// 	minutes="0"+minutes
-				// }
-
-				// var divisor_for_seconds = divisor_for_minutes % 60;
-				// var seconds = Math.ceil(divisor_for_seconds);
-				// if(seconds<=0)
-				// {
-				// 	seconds="00"
-				// }
-				// else if(seconds > 0 && seconds <=9)
-				// {
-				// 	seconds="0"+seconds
-				// }
-
-				// //Check if the Quiz has Ended
-				// if(hours <= 0 && minutes <= 0 && seconds <= 0)
-				// {
-				// 	//alert("Section Has Ended");
-				// 	//alert("{% url 'detail' section_no|addition:1 i.id_no|addition:1 1 %}");
-				// 	window.location.href ="{% url 'endSection' section_no %}" ;
-				// 	//location.reload(true);
-				// }
-
-				
-				// // if(seconds==60)
-				// // {
-				// // 	var time=hours+ ":" + minutes + ":" + (seconds-1);
-				// // }
-				// // else
-				// // {
-				// 	var time=hours+ ":" + minutes + ":" + seconds;
-				// // }
 				var months=['January', 'Februay', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 
 				var date=new Date().getDate();
-				if(date.length<10){
+				if(date.length<10)
+				{
 					date="0"+date;
 				}
 				var month=months[new Date().getMonth()];
@@ -415,7 +337,8 @@
 				console.log(countDownDate);
 
 // Update the count down every 1 second
-var x = setInterval(function() {
+var x = setInterval(function() 
+{
 
   // Get todays date and time
   var now = new Date().getTime();
@@ -446,7 +369,8 @@ var x = setInterval(function() {
 			function clearData(){
 				window.clipboardData.setData('text','')
 			}
-			function cldata(){
+			function cldata()
+			{
 				if(clipboardData){
 					clipboardData.clearData();
 				}
