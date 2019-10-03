@@ -228,9 +228,17 @@ def detail(request, section_no, id_no, random_string):
 		
 		#POST request
 		if(request.method=='POST'):
+			while True:
+				happ=[]
+				rn = rand.randint(1,total_questions)
+				if rn not in happ:
+					happ.append(rn)
+					break
+				else:
+					continue
+			id_no = rn
 			id1=(int)(id_no)
 			id1=id1-1
-			
 			if(section_no=='1'):
 				question=Section1.objects.filter(id_no=str(id_no))
 				question1=Section1.objects.filter(id_no=str(id1))
