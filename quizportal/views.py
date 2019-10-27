@@ -53,8 +53,18 @@ def ques_view(request,section_no,id_no,random_string):
 			count+=1
 		else:
 			continue
-
 	return render(request,"quizportal/test.html",{'questions':questions1})
+
+happened = [] #global var to be accessible all out prog. not too secure but have to test
+def randomize(section_no):
+	questions = Section1.objects.all()
+	length = len(questions)
+	rn = rand.randint(1,length)
+	if rn not in happened:
+		happened.append(rn)
+	else:
+		randomize(section_no)
+	return rn
 
 #Questions rendering
 @login_required(login_url='login')
@@ -189,7 +199,7 @@ def detail(request, section_no, id_no, random_string):
 			endtime=""
 
 		if(len(time)<=0 and timezone.localtime(endtime) > timezone.localtime(timezone.now())):
-
+			print('end 1')
 			return HttpResponseRedirect('/ended')
 
 
@@ -228,20 +238,15 @@ def detail(request, section_no, id_no, random_string):
 		
 		#POST request
 		if(request.method=='POST'):
-			while True:
-				happ=[]
-				rn = rand.randint(1,total_questions)
-				if rn not in happ:
-					happ.append(rn)
-					break
-				else:
-					continue
-			id_no = rn
-			id1=(int)(id_no)
-			id1=id1-1
+			# id_no = randomize(section_no=1)
+			# id1=(int)(id_no)
+			# id1=id1-1
+			# print("id1 : ",id1)
 			if(section_no=='1'):
 				question=Section1.objects.filter(id_no=str(id_no))
+				print ("QUestion :",question)
 				question1=Section1.objects.filter(id_no=str(id1))
+				print("question1 : ",question1)
 				p1=SolvedQ1.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user), Q(check=False))
 			
 			elif(section_no=='2'):
@@ -313,21 +318,25 @@ def detail(request, section_no, id_no, random_string):
 					return HttpResponseRedirect('/detail/Section/2/'+str(int(id_no)+1)+"/1")
 				else:
 					print("end")
+					print('end 2')
 					return HttpResponseRedirect('/ended')
 
 
 		#GET request
 		else:
 			
-			#Check if its the last Question for Section 1
+			#Check if its the last Question for Section 1 (no prob on reload bug)
 			if(section_no=='1'):
 				question=Section1.objects.all()
 				if(len(question)==0):
+					# print('this is the cause')
 					markSection1End(request)
 					if(len(Section2.objects.all())>0):
+						print('end 4')
 						return HttpResponseRedirect('/detail/Section/2/1/1')
 					else:
 						print("Ended")
+						print('end 3')
 						return HttpResponseRedirect('/ended')
 			
 			#Check if its the last Question for Section 2
@@ -350,16 +359,19 @@ def detail(request, section_no, id_no, random_string):
 
 
 			#If trying to access wrong question_no
+			id_no = randomize(section_no=1)
 			id1=(int)(id_no)
 			
 			if(section_no=='1'):
 				question1=Section1.objects.filter(Q(id_no=str(id1)))
 				if(len(question1)==0):
-					#print("yes")
+					# print("yes") ( no prob on reload bug)
+					print('end 5')
 					markSection1End(request)
 					return HttpResponseRedirect('/detail/Section/2/1/1')
 				else:
 					#Attempted Questions
+					
 					if(len(SolvedQ1.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user)))>0):
 						score=SolvedQ1.objects.filter(Q(id_no=request.user))
 						return render(request, 'quizportal/attempted.html', {'section_no':section_no, 'id_no':id1})
@@ -368,6 +380,8 @@ def detail(request, section_no, id_no, random_string):
 						question=Section1.objects.filter(Q(id_no__exact=str(id_no)))
 						args={}
 						for i in question:
+							print('else of else') #this is the problem
+
 							if(i.image):
 								#Image.open('http://127.0.0.1:8000/media/'+str(i.image))
 								args={'question':question, 'section_no':section_no, 'timer':h+":"+m+":"+time[2].split("+")[0], 'image1':"image",
@@ -429,6 +443,7 @@ def detail(request, section_no, id_no, random_string):
 							break
 						return render(request, 'quizportal/questions.html', args)
 			elif(section_no>'3'):
+				print('end 6')
 				return HttpResponseRedirect('/ended')
 
 
