@@ -1,4 +1,3 @@
-
 from django.shortcuts import render,redirect
 from django.template import loader
 from django import forms
@@ -59,11 +58,15 @@ happened = [] #global var to be accessible all out prog. not too secure but have
 def randomize(section_no):
 	questions = Section1.objects.all()
 	length = len(questions)
+	random.seed()
 	rn = rand.randint(1,length)
 	if rn not in happened:
 		happened.append(rn)
+		print("randomize if happening")
 	else:
-		randomize(section_no)
+		rn = randomize(section_no)
+		print('randomize else happening')
+	print("rn : ",rn)
 	return rn
 
 #Questions rendering
@@ -235,7 +238,6 @@ def detail(request, section_no, id_no, random_string):
 					return HttpResponseRedirect('/detail/Section/2/1/1')
 
 
-		
 		#POST request
 		if(request.method=='POST'):
 			# id_no = randomize(section_no=1)
@@ -243,6 +245,8 @@ def detail(request, section_no, id_no, random_string):
 			# id1=id1-1
 			# print("id1 : ",id1)
 			if(section_no=='1'):
+				id_no = randomize(section_no=1)
+				id1=(int)(id_no)
 				question=Section1.objects.filter(id_no=str(id_no))
 				print ("QUestion :",question)
 				question1=Section1.objects.filter(id_no=str(id1))
@@ -327,6 +331,8 @@ def detail(request, section_no, id_no, random_string):
 			
 			#Check if its the last Question for Section 1 (no prob on reload bug)
 			if(section_no=='1'):
+				id_no = randomize(section_no=1)
+				id1=(int)(id_no)
 				question=Section1.objects.all()
 				if(len(question)==0):
 					# print('this is the cause')
@@ -359,8 +365,7 @@ def detail(request, section_no, id_no, random_string):
 
 
 			#If trying to access wrong question_no
-			id_no = randomize(section_no=1)
-			id1=(int)(id_no)
+			
 			
 			if(section_no=='1'):
 				question1=Section1.objects.filter(Q(id_no=str(id1)))
@@ -377,11 +382,10 @@ def detail(request, section_no, id_no, random_string):
 						return render(request, 'quizportal/attempted.html', {'section_no':section_no, 'id_no':id1})
 					else:
 						#Unattempted
-						question=Section1.objects.filter(Q(id_no__exact=str(id_no)))
+						question=Section1.objects.filter(Q(id_no__exact=id_no))
 						args={}
 						for i in question:
-							print('else of else') #this is the problem
-
+							print('line 383') #this is the problem
 							if(i.image):
 								#Image.open('http://127.0.0.1:8000/media/'+str(i.image))
 								args={'question':question, 'section_no':section_no, 'timer':h+":"+m+":"+time[2].split("+")[0], 'image1':"image",
@@ -394,17 +398,21 @@ def detail(request, section_no, id_no, random_string):
 
 			#Section 2
 			elif(section_no=='2'):
+				print('line 397')
 				question1=Section2.objects.filter(Q(id_no=str(id1)))
 				if(len(question1)==0):
+					print('line 400')
 					markSection2End(request)
 					return HttpResponseRedirect('/detail/Section/3/1/1')
 				else:
 					#Attempted Questions
+					print('line 405')
 					if(len(SolvedQ2.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user)))>0):
 						score=SolvedQ2.objects.filter(Q(id_no=request.user))
 						return render(request, 'quizportal/attempted.html', {'section_no':section_no, 'id_no':id1})
 					else:
 						#Unattempted
+
 						question=Section2.objects.filter(Q(id_no__exact=str(id_no)))
 						args={}
 						for i in question:
@@ -420,8 +428,10 @@ def detail(request, section_no, id_no, random_string):
 
 			#Section 3
 			elif(section_no=='3'):
+				print('line 424')
 				question1=Section3.objects.filter(Q(id_no=str(id1)))
 				if(len(question1)==0):
+					print('line 428')
 					return HttpResponseRedirect('/ended')
 				else:
 					#Attempted Questions
