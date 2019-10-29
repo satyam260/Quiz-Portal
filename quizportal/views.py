@@ -58,20 +58,22 @@ happened = [] #global var to be accessible all out prog. not too secure but have
 def randomize(section_no):
 	questions = Section1.objects.all()
 	length = len(questions)
-	random.seed()
-	rn = rand.randint(1,length)
-	if rn not in happened:
-		happened.append(rn)
-		print("randomize if happening")
-	else:
-		rn = randomize(section_no)
-		print('randomize else happening')
-	print("rn : ",rn)
-	return rn
+	# random.seed()
+	if len(happened)!=length:
+		rn = rand.randint(1,length)
+		if rn not in happened and rn is not 'None':
+			happened.append(rn)
+			print("randomize if happening")
+			return rn
+		else:
+			rn = randomize(section_no)
+			print('randomize else happening')
+			return rn
 
 #Questions rendering
 @login_required(login_url='login')
 def detail(request, section_no, id_no, random_string):
+	random.seed()
 	#print(section_no, id_no, request, timezone.localtime(timezone.now()))
 	#print(timezone.localtime(timezone.now()))
 	#print(Time1.objects.get(id_no=request.user).start_time)
