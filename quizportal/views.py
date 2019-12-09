@@ -16,6 +16,46 @@ import pytz
 from tzlocal import get_localzone # $ pip install tzlocal
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+from random import *
+
+
+
+
+## 		RANDOMIZATION - RICHESH ###
+sec1h=[]
+sec2h=[]
+sec3h=[]
+flag = False
+
+def randomize_it(section_no):
+	global flag
+	flag = True
+	if section_no == '1':
+		s1 = list(Section1.objects.all())
+		shuffle(s1)
+		global sec1h
+		for x in s1:
+			x = x.id_no
+			sec1h.append(x)
+	elif section_no == '2':
+		s2 = list(Section2.objects.all())
+		shuffle(s2)
+		global sec2h
+		for x in s2:
+			x = x.id_no
+			sec2h.append(x)
+	elif section_no == '3':
+		s3 = list(Section3.objects.all())
+		shuffle(s3)
+		global sec3h
+		for x in s3:
+			x = x.id_no
+			sec3h.append(x)
+	print("sec1h, ",sec1h)
+
+# end randomization
+
+
 
 
 #Change Password
@@ -23,7 +63,7 @@ from django.utils.deprecation import MiddlewareMixin
 def ftpassch(request):
 	user=User.objects.get(username=request.user)
 	if(request.method=="POST"):
-			#print("YES")
+			
 			user.set_password(request.POST.get('password'))
 			obj,notif=userpasswords.objects.get_or_create(username=request.user, password=request.POST.get('password'))
 			if notif is True:
@@ -36,47 +76,20 @@ def ftpassch(request):
 			return HttpResponseRedirect('/detail/Section/1/1/1')
 		else:
 			return render(request,'quizportal/passchng.html',{'name':user.first_name})
-			
-import random as rand
-def ques_view(request,section_no,id_no,random_string):
-	questions = Section1.objects.all()
-	questions1=[]
-	length= len(questions)
-	count = 0
-	happ=[]
-	while count!=length:
-		rn = rand.randint(1,length)
-		if rn not in happ:
-			happ.append(rn)
-			questions1.append(Section1.objects.get(id_no=rn))
-			count+=1
-		else:
-			continue
-	return render(request,"quizportal/test.html",{'questions':questions1})
 
-happened = [] #global var to be accessible all out prog. not too secure but have to test
-def randomize(section_no):
-	questions = Section1.objects.all()
-	length = len(questions)
-	# random.seed()
-	if len(happened)!=length:
-		rn = rand.randint(1,length)
-		if rn not in happened and rn is not 'None':
-			happened.append(rn)
-			print("randomize if happening")
-			return rn
-		else:
-			rn = randomize(section_no)
-			print('randomize else happening')
-			return rn
+
 
 #Questions rendering
 @login_required(login_url='login')
 def detail(request, section_no, id_no, random_string):
-	random.seed()
-	#print(section_no, id_no, request, timezone.localtime(timezone.now()))
-	#print(timezone.localtime(timezone.now()))
-	#print(Time1.objects.get(id_no=request.user).start_time)
+	global flag
+	global sec1h
+	global sec2h
+	global sec3h
+	
+	if flag!=True:
+		randomize_it(section_no)
+	id_no = sec1h[0]
 	#Check if logged in user is Admin
 	if(request.user.username=='admin' or request.user.username=='hydra' ''' or request.user.username=='richesh1' '''):
 		return HttpResponseRedirect('/adminmain')
@@ -242,17 +255,18 @@ def detail(request, section_no, id_no, random_string):
 
 		#POST request
 		if(request.method=='POST'):
-			# id_no = randomize(section_no=1)
-			# id1=(int)(id_no)
-			# id1=id1-1
+			id_no = sec1h[0]
+			id1=(int)(id_no)
+			id1=id1-1
+			sec1h.pop(0)
 			# print("id1 : ",id1)
+
 			if(section_no=='1'):
-				id_no = randomize(section_no=1)
 				id1=(int)(id_no)
 				question=Section1.objects.filter(id_no=str(id_no))
-				print ("QUestion :",question)
+				
 				question1=Section1.objects.filter(id_no=str(id1))
-				print("question1 : ",question1)
+
 				p1=SolvedQ1.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user), Q(check=False))
 			
 			elif(section_no=='2'):
@@ -305,8 +319,6 @@ def detail(request, section_no, id_no, random_string):
 						args={'question':question, 'section_no':section_no, 'timer':h+":"+m+":"+time[2].split("+")[0],
 						'total_questions':total_questions, 'total_time':total_time}
 					break
-				print("query : ")
-				print(query)
 				return render(request, 'quizportal/questions.html', args)
 
 			else:
@@ -333,11 +345,12 @@ def detail(request, section_no, id_no, random_string):
 			
 			#Check if its the last Question for Section 1 (no prob on reload bug)
 			if(section_no=='1'):
-				id_no = randomize(section_no=1)
+				# id_no = randomize(section_no=1)
+				print("sec1h initi : ",sec1h[0])
+				id_no = sec1h[0]
 				id1=(int)(id_no)
 				question=Section1.objects.all()
 				if(len(question)==0):
-					# print('this is the cause')
 					markSection1End(request)
 					if(len(Section2.objects.all())>0):
 						print('end 4')
@@ -400,7 +413,6 @@ def detail(request, section_no, id_no, random_string):
 
 			#Section 2
 			elif(section_no=='2'):
-				print('line 397')
 				question1=Section2.objects.filter(Q(id_no=str(id1)))
 				if(len(question1)==0):
 					print('line 400')

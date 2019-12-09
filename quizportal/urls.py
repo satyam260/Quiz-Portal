@@ -24,6 +24,5 @@ urlpatterns = [
     path('regis', views.regis, name='regis'),
     path('admindelete/<nu>', views.admindelete, name='admindelete'),
     path('logout', LogoutView.as_view(template_name='quizportal/logout.html'), name="logout"),
-    path('test/<section_no>/<id_no>/<random_string>/',views.ques_view,name='test'),
 
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
