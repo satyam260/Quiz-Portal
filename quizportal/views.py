@@ -27,31 +27,24 @@ sec2h=[]
 sec3h=[]
 flag = False
 
-def randomize_it(section_no):
+def randomize_it():
 	global flag
 	flag = True
-	if section_no == '1':
-		s1 = list(Section1.objects.all())
+	s1 = list(Section1.objects.all())
+	s2 = list(Section2.objects.all())
+	s3 = list(Section3.objects.all())
+	global sec1h
+	global sec2h
+	global sec3h
+	if len(s1)>0:
+		f = s1[0]
+		sec1h.append(f.id_no)
+		s1.pop(0)
 		shuffle(s1)
-		global sec1h
 		for x in s1:
-			x = x.id_no
-			sec1h.append(x)
-	elif section_no == '2':
-		s2 = list(Section2.objects.all())
-		shuffle(s2)
-		global sec2h
-		for x in s2:
-			x = x.id_no
-			sec2h.append(x)
-	elif section_no == '3':
-		s3 = list(Section3.objects.all())
-		shuffle(s3)
-		global sec3h
-		for x in s3:
-			x = x.id_no
-			sec3h.append(x)
-	print("sec1h, ",sec1h)
+			sec1h.append(x.id_no)
+			
+	
 
 # end randomization
 
@@ -87,8 +80,10 @@ def detail(request, section_no, id_no, random_string):
 	global sec2h
 	global sec3h
 	
-	if flag!=True:
-		randomize_it(section_no)
+
+	if flag is False:
+		randomize_it()
+	print("ss",sec1h)
 	id_no = sec1h[0]
 	#Check if logged in user is Admin
 	if(request.user.username=='admin' or request.user.username=='hydra' ''' or request.user.username=='richesh1' '''):
@@ -123,13 +118,13 @@ def detail(request, section_no, id_no, random_string):
 			return HttpResponseRedirect('/ended')
 
 
-
 		if(section_no =='1' and len(Time1.objects.filter(Q(id_no=request.user)))==0 and id_no=='1' and len(Section1.objects.all())>0):
 			
 			
 			#tzname = request.session.get('django_timezone')
 			#timezone.activate(pytz.timezone(tzname))
 			start=timezone.localtime(timezone.now())
+			print("start time : ",start)
 			print(start, timezone.localtime(timezone.now()))
 			timeobj=Time.objects.filter(Q(s_no=1))
 			for timeob in timeobj:
@@ -190,6 +185,8 @@ def detail(request, section_no, id_no, random_string):
 				obj,notif=Time3.objects.get_or_create(id_no=request.user,start_time=start, end_time=start+timedelta(minutes=(int)(end)))
 				if notif is True:
 					obj.save()
+
+					
 		#Quiz Ended
 		if(section_no=='1'):
 			time=Time1.objects.filter(Q(id_no=request.user))
