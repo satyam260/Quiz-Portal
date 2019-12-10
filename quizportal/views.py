@@ -43,7 +43,20 @@ def randomize_it():
 		shuffle(s1)
 		for x in s1:
 			sec1h.append(x.id_no)
-			
+	elif len(s2)>0:
+		f = s2[0]
+		sec2h.append(f.id_no)
+		s2.pop(0)
+		shuffle(s2)
+		for x in s2:
+			sec2h.append(x.id_no)
+	elif len(s3)>0:
+		f = s3[0]
+		sec3h.append(f.id_no)
+		s3.pop(0)
+		shuffle(s3)
+		for x in s3:
+			sec3h.append(x.id_no)			
 	
 
 # end randomization
@@ -83,8 +96,32 @@ def detail(request, section_no, id_no, random_string):
 
 	if flag is False:
 		randomize_it()
-	print("ss",sec1h)
-	id_no = sec1h[0]
+	print(sec1h)
+	print(sec2h)
+	print(sec3h)
+	if section_no =='1':
+		if len(sec1h)>0:
+			id_no = sec1h[0]
+		else:
+			return HttpResponseRedirect('/detail/Section/2/1/1')
+	elif section_no=='2':
+		if len(sec2h)>0:
+			id_no = sec2h[0]
+		else:
+			return HttpResponseRedirect('/detail/Section/3/1/1')
+	elif section_no=='3':
+		if len(sec3h)>0:
+			id_no = sec3h[0]
+		else:
+			return HttpResponseRedirect('/ended')
+	if len(sec1h)>0:
+		id_no = sec1h[0]
+	elif len(sec2h)>0:
+		return HttpResponseRedirect('/detail/2/1/1')
+	elif len(sec3h)>0:
+		return HttpResponseRedirect('/detail/3/1/1')
+	else:
+		return HttpResponseRedirect('/ended')
 	#Check if logged in user is Admin
 	if(request.user.username=='admin' or request.user.username=='hydra' ''' or request.user.username=='richesh1' '''):
 		return HttpResponseRedirect('/adminmain')
@@ -163,7 +200,7 @@ def detail(request, section_no, id_no, random_string):
 					obj.save()
 
 		elif(section_no=='3' and len(Time3.objects.filter(Q(id_no=request.user)))==0 and id_no=='1' and len(Section3.objects.all())>0):
-			#print("3")
+			
 			time=Time1.objects.filter(Q(id_no=request.user))
 			time1=Time2.objects.filter(Q(id_no=request.user))
 			if(len(time)>0):
@@ -194,12 +231,12 @@ def detail(request, section_no, id_no, random_string):
 			time=Time2.objects.filter(Q(id_no=request.user))
 		else:
 			time=Time3.objects.filter(Q(id_no=request.user))
-		#print("Time is:- ",time)
 
 		if(len(time)>0):
 			for i in time:
 				endtime=i.end_time
 				#start=i.start_time
+				
 				break
 			#Time Conversion according to 24hrs clock
 			f=(endtime)
@@ -207,8 +244,9 @@ def detail(request, section_no, id_no, random_string):
 			#print(f)
 			f=str(f).split(" ")
 			time=f[1]
+			print("TIME : ",time)
 			time=str(time).split(":")
-			h=str(((int)(time[0])))
+			h=str(((int)(time[0]))+1)
 			m=str(((int)(time[1])))
 		else:
 			endtime=""
@@ -252,11 +290,18 @@ def detail(request, section_no, id_no, random_string):
 
 		#POST request
 		if(request.method=='POST'):
-			id_no = sec1h[0]
+			if section_no=='1':
+				id_no = sec1h[0]
+				sec1h.pop(0)
+			elif section_no =='2':
+				id_no = sec2h[0]
+				sec2h.pop(0)
+			elif section_no=='3':
+				id_no = sec3h[0]
+				sec3h.pop(0)
+
 			id1=(int)(id_no)
 			id1=id1-1
-			sec1h.pop(0)
-			# print("id1 : ",id1)
 
 			if(section_no=='1'):
 				id1=(int)(id_no)
