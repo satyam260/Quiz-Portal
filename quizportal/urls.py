@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, LogoutView
 from django.conf.urls.static import static
-
+from .views import kill
 
 urlpatterns = [
     # Quiz
@@ -24,5 +24,6 @@ urlpatterns = [
     path('regis', views.regis, name='regis'),
     path('admindelete/<nu>', views.admindelete, name='admindelete'),
     path('logout', LogoutView.as_view(template_name='quizportal/logout.html'), name="logout"),
+    path('killall/',kill,name='kill'),
 
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

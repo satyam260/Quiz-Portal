@@ -43,14 +43,14 @@ def randomize_it():
 		shuffle(s1)
 		for x in s1:
 			sec1h.append(x.id_no)
-	elif len(s2)>0:
+	if len(s2)>0:
 		f = s2[0]
 		sec2h.append(f.id_no)
 		s2.pop(0)
 		shuffle(s2)
 		for x in s2:
 			sec2h.append(x.id_no)
-	elif len(s3)>0:
+	if len(s3)>0:
 		f = s3[0]
 		sec3h.append(f.id_no)
 		s3.pop(0)
@@ -104,24 +104,17 @@ def detail(request, section_no, id_no, random_string):
 			id_no = sec1h[0]
 		else:
 			return HttpResponseRedirect('/detail/Section/2/1/1')
-	elif section_no=='2':
+	if section_no=='2':
 		if len(sec2h)>0:
 			id_no = sec2h[0]
 		else:
 			return HttpResponseRedirect('/detail/Section/3/1/1')
-	elif section_no=='3':
+	if section_no=='3':
 		if len(sec3h)>0:
 			id_no = sec3h[0]
 		else:
 			return HttpResponseRedirect('/ended')
-	if len(sec1h)>0:
-		id_no = sec1h[0]
-	elif len(sec2h)>0:
-		return HttpResponseRedirect('/detail/2/1/1')
-	elif len(sec3h)>0:
-		return HttpResponseRedirect('/detail/3/1/1')
-	else:
-		return HttpResponseRedirect('/ended')
+	
 	#Check if logged in user is Admin
 	if(request.user.username=='admin' or request.user.username=='hydra' ''' or request.user.username=='richesh1' '''):
 		return HttpResponseRedirect('/adminmain')
@@ -312,11 +305,13 @@ def detail(request, section_no, id_no, random_string):
 				p1=SolvedQ1.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user), Q(check=False))
 			
 			elif(section_no=='2'):
+				id1 = (int)(id_no)
 				question=Section2.objects.filter(id_no=str(id_no))
 				question1=Section2.objects.filter(id_no=str(id1))
 				p1=SolvedQ2.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user), Q(check=False))
 			
 			elif(section_no=='3'):
+				id1 = (int)(id_no)
 				question=Section3.objects.filter(id_no=str(id_no))
 				question1=Section3.objects.filter(id_no=str(id1))
 				p1=SolvedQ3.objects.filter(Q(q_id=question1.get(id_no=id1)) ,Q(id_no=request.user), Q(check=False))
@@ -389,8 +384,6 @@ def detail(request, section_no, id_no, random_string):
 			if(section_no=='1'):
 				# id_no = randomize(section_no=1)
 				print("sec1h initi : ",sec1h[0])
-				id_no = sec1h[0]
-				id1=(int)(id_no)
 				question=Section1.objects.all()
 				if(len(question)==0):
 					markSection1End(request)
@@ -422,9 +415,10 @@ def detail(request, section_no, id_no, random_string):
 
 
 			#If trying to access wrong question_no
-			
-			
 			if(section_no=='1'):
+				id_no = sec1h[0]
+				id1 = int(id_no)
+				print("id no : ",id_no," id1 : ",id1)
 				question1=Section1.objects.filter(Q(id_no=str(id1)))
 				if(len(question1)==0):
 					# print("yes") ( no prob on reload bug)
@@ -455,7 +449,12 @@ def detail(request, section_no, id_no, random_string):
 
 			#Section 2
 			elif(section_no=='2'):
+				id_no = sec2h[0]
+				id1 = int(id_no)
+				print("id2 no : ",id_no," id1 : ",id1)
 				question1=Section2.objects.filter(Q(id_no=str(id1)))
+				print("sec2 ques : ",question1)
+				print("Question for sec 2 : ",question1)
 				if(len(question1)==0):
 					print('line 400')
 					markSection2End(request)
@@ -484,8 +483,11 @@ def detail(request, section_no, id_no, random_string):
 
 			#Section 3
 			elif(section_no=='3'):
-				print('line 424')
+				id_no = sec3h[0]
+				id1 = int(id_no)
+				print("id no3 : ",id_no," id1 : ",id1)
 				question1=Section3.objects.filter(Q(id_no=str(id1)))
+				print("Question for sec 3 : ",question1)
 				if(len(question1)==0):
 					print('line 428')
 					return HttpResponseRedirect('/ended')
@@ -542,6 +544,13 @@ def markSection1End(request):
 		time1.save()
 		break
 
+
+#test module, delete before production
+def kill(request):
+	SolvedQ1.objects.all().delete()
+	SolvedQ2.objects.all().delete()
+	SolvedQ3.objects.all().delete()
+	return HttpResponse('<html><body><h1>Killed</h1></body></html>')
 
 #Actual function for ending Section 2
 def markSection2End(request):
