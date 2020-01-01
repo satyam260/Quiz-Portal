@@ -116,7 +116,7 @@ def detail(request, section_no, id_no, random_string):
 			return HttpResponseRedirect('/ended')
 	
 	#Check if logged in user is Admin
-	if(request.user.username=='admin' or request.user.username=='hydra' ''' or request.user.username=='richesh1' '''):
+	if(request.user.username=='admin' or request.user.username=='hydra'  or request.user.username=='' or request.user.username=='testadmin'):
 		return HttpResponseRedirect('/adminmain')
 
 	else:
@@ -239,12 +239,12 @@ def detail(request, section_no, id_no, random_string):
 			time=f[1]
 			print("TIME : ",time)
 			time=str(time).split(":")
-			h=str(((int)(time[0]))+1)
+			h=str(((int)(time[0]))+1)	#time for questions
 			m=str(((int)(time[1])))
 		else:
 			endtime=""
 
-		if(len(time)<=0 and timezone.localtime(endtime) > timezone.localtime(timezone.now())):
+		if(len(time)<=0 and (timezone.localtime(endtime) > timezone.localtime(timezone.now()))):
 			print('end 1')
 			return HttpResponseRedirect('/ended')
 
@@ -295,6 +295,7 @@ def detail(request, section_no, id_no, random_string):
 
 			id1=(int)(id_no)
 			id1=id1-1
+			print("id no : ",id_no,"id1 : ",id1)
 
 			if(section_no=='1'):
 				id1=(int)(id_no)
@@ -384,6 +385,7 @@ def detail(request, section_no, id_no, random_string):
 			if(section_no=='1'):
 				# id_no = randomize(section_no=1)
 				print("sec1h initi : ",sec1h[0])
+								
 				question=Section1.objects.all()
 				if(len(question)==0):
 					markSection1End(request)
@@ -417,6 +419,8 @@ def detail(request, section_no, id_no, random_string):
 			#If trying to access wrong question_no
 			if(section_no=='1'):
 				id_no = sec1h[0]
+				if id_no =='1':
+					sec1h.pop(0)
 				id1 = int(id_no)
 				print("id no : ",id_no," id1 : ",id1)
 				question1=Section1.objects.filter(Q(id_no=str(id1)))
@@ -450,6 +454,8 @@ def detail(request, section_no, id_no, random_string):
 			#Section 2
 			elif(section_no=='2'):
 				id_no = sec2h[0]
+				if id_no =='2':
+					sec2h.pop(0)
 				id1 = int(id_no)
 				print("id2 no : ",id_no," id1 : ",id1)
 				question1=Section2.objects.filter(Q(id_no=str(id1)))
@@ -484,6 +490,8 @@ def detail(request, section_no, id_no, random_string):
 			#Section 3
 			elif(section_no=='3'):
 				id_no = sec3h[0]
+				if id_no =='3':
+					sec3h.pop(0)
 				id1 = int(id_no)
 				print("id no3 : ",id_no," id1 : ",id1)
 				question1=Section3.objects.filter(Q(id_no=str(id1)))
